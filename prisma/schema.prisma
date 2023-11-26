@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  irrigationRequest IrrigationRequest[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model ArduinoInfo {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  arduinoSensorRead Json @map("arduino_sensor_read")
+}
+
+model WeatherInfo {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  whaterData Json @map("whater_data")
+  whaterDataTime DateTime @map("whater_data_time")
+}
+
+model IrrigationRequest {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  irrigationRequestTime DateTime @map("irrigation_request_time")
+  requestMadeByUser User @relation(fields: [requestMadeByUserId], references: [id])
+  requestMadeByUserId String @map("request_made_by_user_id")
+  irrigationRequestStatus IrrigationRequestStatus @default(PENDING)
+}
+
+enum IrrigationRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
