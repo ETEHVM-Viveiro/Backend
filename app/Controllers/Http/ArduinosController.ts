@@ -75,7 +75,6 @@ export default class ArduinosController {
     public async getIrrigationRequests({ request, response }: HttpContextContract) {
         // verify if user has admin role, if not, return error
         // if has, return all irrigation requests
-
         const token = request.header('authorization')
 
         if (token !== process.env.arduinoToken) {
